@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
@@ -36,8 +37,7 @@ import com.plcoding.meditationuiyoutube.model.FilterHome
 import com.plcoding.meditationuiyoutube.model.FoodCoupon
 import com.plcoding.meditationuiyoutube.model.LocationHome
 import com.plcoding.meditationuiyoutube.model.TopBrandData
-import com.plcoding.meditationuiyoutube.ui.theme.ZomatoBabyRed
-import com.plcoding.meditationuiyoutube.ui.theme.ZomatoRed
+import com.plcoding.meditationuiyoutube.ui.theme.*
 
 @Composable
 @Preview
@@ -277,7 +277,7 @@ fun TopBrandSection(
             Text(
                 text = "Top Brands for you",
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.ExtraBold,
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "See all", fontWeight = FontWeight.Bold)
@@ -409,19 +409,22 @@ fun CouponSection(
             imageId = R.drawable.ic_pizza,
             offPercent = 60,
             upToOffCashAmount = 120,
-            cashBackPartnerImageId = R.drawable.ic_paypal
+            cashBackPartnerImageId = R.drawable.ic_paypal,
+            colorGradient = listOf(Beige1, Beige2, Beige3)
         ),
         FoodCoupon(
             imageId = R.drawable.ic_donut,
             offPercent = 70,
             upToOffCashAmount = 99,
-            cashBackPartnerImageId = R.drawable.ic_paypal
+            cashBackPartnerImageId = R.drawable.ic_paypal,
+            colorGradient = listOf(BlueViolet1, BlueViolet2, AquaBlue)
         ),
         FoodCoupon(
             imageId = R.drawable.ic_ramen,
             offPercent = 40,
             upToOffCashAmount = 250,
-            cashBackPartnerImageId = R.drawable.ic_paypal
+            cashBackPartnerImageId = R.drawable.ic_paypal,
+            colorGradient = listOf(OrangeYellow1, OrangeYellow1, OrangeYellow1)
         ),
     )
 ) {
@@ -433,7 +436,7 @@ fun CouponSection(
         Text(
             text = "Coupon for you",
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
         )
 
@@ -452,7 +455,8 @@ fun CouponItem(
         imageId = R.drawable.ic_donut,
         offPercent = 60,
         upToOffCashAmount = 120,
-        cashBackPartnerImageId = R.drawable.ic_paypal
+        cashBackPartnerImageId = R.drawable.ic_paypal,
+        colorGradient = listOf(Beige1, Beige2, Beige3)
     )
 ) {
     Box(
@@ -460,6 +464,9 @@ fun CouponItem(
             .padding(start = 20.dp)
             .clip(RoundedCornerShape(5.dp))
             .border(width = 1.dp, color = Color.Gray, RoundedCornerShape(5.dp))
+            .background(
+                brush = Brush.verticalGradient(colors = foodCoupon.colorGradient)
+            )
     ) {
         Row(modifier = Modifier.wrapContentWidth()) {
             Column(modifier = Modifier.align(CenterVertically)) {
@@ -469,7 +476,7 @@ fun CouponItem(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(start = 20.dp, top = 20.dp)
-                        .size(width = 126.dp, height = 32.dp)
+                        .size(width = 126.dp, height = 24.dp)
                 )
                 Text(
                     text = "${foodCoupon.offPercent}% OFF",
@@ -477,7 +484,8 @@ fun CouponItem(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(start = 20.dp)
-                        .wrapContentHeight()
+                        .wrapContentHeight(),
+                    textAlign = TextAlign.Start
                 )
                 Text(
                     text = "UPTO ₹${foodCoupon.upToOffCashAmount} ON YOUR FIRST ORDER ",
