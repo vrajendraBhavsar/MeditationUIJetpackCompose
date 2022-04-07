@@ -14,18 +14,23 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import com.plcoding.meditationuiyoutube.R
 import com.plcoding.meditationuiyoutube.model.FilterHome
 import com.plcoding.meditationuiyoutube.model.LocationHome
@@ -277,61 +282,86 @@ fun TopBrandItem(
         approxDeliveryTime = "10-20 mins"
     ),
 ) {
-    Box {
-        Image(
-            painter = painterResource(id = topBrandData.brandImg),
-            contentDescription = topBrandData.brandName,
-            contentScale = ContentScale.Crop,            // crop the image if it's not a square
-            modifier = Modifier
-                .padding(start = 5.5.dp)
-                .size(86.dp)
-                .clip(CircleShape)                       // clip to the circle shape
-                .border(0.5.dp, Color.Gray, CircleShape)   // add a border (optional)
+    val constraintSet = ConstraintSet { //1. Constraint set
+        val brandImage =
+            createRefFor("brandImage") //2. Reference for each composable you want to Constraint in layout
+        val brandData =
+            createRefFor("brandData") // Need to do this for every composable in constraint layout
 
-        )
+        constrain(brandImage) { //3. Constrain .. to specify constraint of IMAGE using reference
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            width = Dimension.value(86.dp)
+            height = Dimension.value(86.dp)
+        }
+        constrain(brandData) {
+            top.linkTo(brandImage.top, margin = 72.dp) // top to the bottom
+            start.linkTo(brandImage.start)
+            end.linkTo(brandImage.end)
+            width = Dimension.value(86.dp)
+            height = Dimension.value(86.dp)
+        }
     }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-            .background(ZomatoBabyRed)
-            .padding(top = 72.dp)
-    ) {
-/*        Image(
-            painter = painterResource(id = topBrandData.brandImg),
-            contentDescription = topBrandData.brandName,
-            contentScale = ContentScale.Crop,            // crop the image if it's not a square
+    ConstraintLayout(constraintSet = constraintSet, modifier = Modifier.fillMaxSize()) {
+        Box(
             modifier = Modifier
-                .size(86.dp)
-                .clip(CircleShape)                       // clip to the circle shape
-                .border(0.5.dp, Color.Gray, CircleShape)   // add a border (optional)
-        )*/
-        Row(
-            modifier = Modifier
-                .size(70.dp, 24.dp)
-                .border(0.5.dp, Color.Gray, shape = RoundedCornerShape(5.dp))
-                .clip(RoundedCornerShape(5.dp))
-                .background(Color.White),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "${topBrandData.discountPercent}% OFF",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(CenterVertically)
+                .layoutId("brandImage")
+        ) {  // to specify which reference and constrain it should use
+            Image(
+                painter = painterResource(id = topBrandData.brandImg),
+                contentDescription = topBrandData.brandName,
+                contentScale = ContentScale.Crop,            // crop the image if it's not a square
+                modifier = Modifier
+                    .padding(horizontal = 5.dp, vertical = 5.dp)
+                    .clip(CircleShape)                       // clip to the circle shape
+                    .border(0.5.dp, Color.Gray, CircleShape)   // add a border (optional)
             )
         }
-        Text(
-            text = topBrandData.brandName,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.align(CenterHorizontally)
-        )
-        Text(
-            text = topBrandData.approxDeliveryTime,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.align(CenterHorizontally),
-            color = Color.Gray
-        )
+        Box(
+            modifier = Modifier
+                .layoutId("brandData")
+                .padding(horizontal = 5.dp),
+            contentAlignment = Center
+        ) {  // to specify which reference and constrain it should use
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                    .align(TopCenter)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .size(width = 70.dp,height =  24.dp)
+                        .border(0.5.dp, Color.Gray, shape = RoundedCornerShape(5.dp))
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(Color.White),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "${topBrandData.discountPercent}% OFF",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(CenterVertically)
+                    )
+                }
+                Text(
+                    text = topBrandData.brandName,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.width(80.dp),
+//                    modifier = Modifier.align(CenterHorizontally)
+                )
+                Text(
+                    text = topBrandData.approxDeliveryTime,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+//                    modifier = Modifier.align(CenterHorizontally),
+                    color = Color.Gray
+                )
+            }
+        }
     }
 }
