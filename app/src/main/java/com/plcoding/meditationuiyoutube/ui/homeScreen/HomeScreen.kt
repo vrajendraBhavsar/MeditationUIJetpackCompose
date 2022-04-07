@@ -1,9 +1,6 @@
 package com.plcoding.meditationuiyoutube.ui.homeScreen
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
@@ -33,10 +30,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.plcoding.meditationuiyoutube.R
-import com.plcoding.meditationuiyoutube.model.FilterHome
-import com.plcoding.meditationuiyoutube.model.FoodCoupon
-import com.plcoding.meditationuiyoutube.model.LocationHome
-import com.plcoding.meditationuiyoutube.model.TopBrandData
+import com.plcoding.meditationuiyoutube.model.*
 import com.plcoding.meditationuiyoutube.ui.theme.*
 
 @Composable
@@ -47,13 +41,21 @@ fun HomeScreen() {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Column {
+        val scrollState = rememberScrollState()
+
+        // Smooth scroll to specified pixels on first composition
+        LaunchedEffect(Unit) { scrollState.animateScrollTo(10000) }
+
+        Column(
+            modifier = Modifier.verticalScroll(scrollState)
+        ) {
             TopSpace()
             LocationSection()
             SearchBar()
             FilterSection()
             TopBrandSection()
             CouponSection()
+            CategorySection()
         }
     }
 }
@@ -518,5 +520,84 @@ fun CouponItem(
                     .padding(top = 20.dp, end = 20.dp)
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun CategorySection(
+    categoryItemList: List<CategoryData> = listOf(
+        CategoryData(catImg = R.drawable.ic_bbq, catName = "Barbecue"),
+        CategoryData(catImg = R.drawable.ic_cake, catName = "Cakes and Dessert"),
+        CategoryData(catImg = R.drawable.ic_sandwich, catName = "Fast Food"),
+        CategoryData(catImg = R.drawable.ic_kebab, catName = "Kebab"),
+        CategoryData(catImg = R.drawable.ic_dosa, catName = "South Indian"),
+        CategoryData(catImg = R.drawable.ic_black_tea, catName = "Tea and Beverages"),
+        CategoryData(catImg = R.drawable.ic_pizza, catName = "Italian"),
+        CategoryData(catImg = R.drawable.ic_ramen, catName = "Japanese"),
+    )
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    ) {
+        Text(
+            text = "Choose yummy for your tummy",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+        )
+        //First line of category
+        LazyRow {
+            items(categoryItemList.size) {
+                if (it <= 3) {
+                    CategoryItem(categoryData = categoryItemList[it])
+                }
+            }
+        }
+        //Second line of category
+        LazyRow {
+            items(categoryItemList.size) {
+                if (it in 4..7) {
+                    CategoryItem(categoryData = categoryItemList[it])
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun CategoryItem(
+    categoryData: CategoryData = CategoryData(
+        catImg = R.drawable.ic_black_tea,
+        catName = "Tea and Beverages"
+    )
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 10.dp)
+    ) {
+        Image(
+            painter = painterResource(id = categoryData.catImg),
+            contentDescription = categoryData.catName,
+            contentScale = ContentScale.Crop,   // crop the image if it's not a square
+            modifier = Modifier
+                .clip(CircleShape)  // clip to the circle shape
+                .border(0.5.dp, Color.Gray, CircleShape)    // add a border (optional)
+                .size(86.dp)
+        )
+        Text(
+            text = categoryData.catName,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Normal,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.width(80.dp),
+//                    modifier = Modifier.align(CenterHorizontally)
+        )
     }
 }
