@@ -33,6 +33,7 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.plcoding.meditationuiyoutube.R
 import com.plcoding.meditationuiyoutube.model.FilterHome
+import com.plcoding.meditationuiyoutube.model.FoodCoupon
 import com.plcoding.meditationuiyoutube.model.LocationHome
 import com.plcoding.meditationuiyoutube.model.TopBrandData
 import com.plcoding.meditationuiyoutube.ui.theme.ZomatoBabyRed
@@ -52,6 +53,7 @@ fun HomeScreen() {
             SearchBar()
             FilterSection()
             TopBrandSection()
+            CouponSection()
         }
     }
 }
@@ -132,7 +134,8 @@ fun SearchBar() {
                 contentDescription = "search",
                 modifier = Modifier
                     .padding(5.dp)
-                    .size(20.dp)
+                    .size(20.dp),
+                tint = ZomatoRed
             )
             Text(
                 text = "Restaurant name or a dish...",
@@ -162,7 +165,23 @@ fun FilterSection(
             Box(
                 contentAlignment = Center,
                 modifier = Modifier
-                    .padding(start = 15.dp, bottom = 15.dp)
+                    .then(
+                        when {
+                            filterList[it] == filterList.first() -> Modifier.padding(
+                                20.dp,
+                                0.dp,
+                                0.dp,
+                                0.dp
+                            )
+                            filterList[it] == filterList.last() -> Modifier.padding(
+                                10.dp,
+                                0.dp,
+                                20.dp,
+                                0.dp
+                            )
+                            else -> Modifier.padding(10.dp, 0.dp, 0.dp, 0.dp)
+                        }
+                    )
                     .border(
                         color = if (selectedFilterItem == it) ZomatoRed else Color.Gray,
                         width = 0.5.dp,
@@ -246,25 +265,38 @@ fun TopBrandSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .wrapContentHeight()
     ) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 12.dp)
+        ) {
             //Top Brand and See all..
-            Text(text = "Top Brands for you", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = "Top Brands for you",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+            )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "See all", fontWeight = FontWeight.Bold)
                 Icon(
                     painter = painterResource(id = R.drawable.arrow_circle),
                     contentDescription = "arrow circle",
                     modifier = Modifier
-                        .size(12.dp)
-                        .padding(start = 2.dp)
+                        .size(14.dp)
+                        .padding(start = 3.dp)
                         .size(12.dp)
                 )
             }
         }
         // Top Brand Items
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        ) {
             items(topBrandList.size) {
                 TopBrandItem(topBrandData = topBrandList[it])
             }
@@ -276,7 +308,7 @@ fun TopBrandSection(
 @Preview
 fun TopBrandItem(
     topBrandData: TopBrandData = TopBrandData(
-        brandImg = R.drawable.ic_burger,
+        brandImg = R.drawable.ic_pizza,
         discountPercent = 70,
         brandName = "Burger Queen",
         approxDeliveryTime = "10-20 mins"
@@ -303,7 +335,11 @@ fun TopBrandItem(
             height = Dimension.value(86.dp)
         }
     }
-    ConstraintLayout(constraintSet = constraintSet, modifier = Modifier.fillMaxSize()) {
+    ConstraintLayout(
+        constraintSet = constraintSet,
+        modifier = Modifier
+            .padding(start = 10.dp)
+    ) {
         Box(
             modifier = Modifier
                 .layoutId("brandImage")
@@ -313,7 +349,7 @@ fun TopBrandItem(
                 contentDescription = topBrandData.brandName,
                 contentScale = ContentScale.Crop,            // crop the image if it's not a square
                 modifier = Modifier
-                    .padding(horizontal = 5.dp, vertical = 5.dp)
+//                    .padding(horizontal = 5.dp, vertical = 5.dp)
                     .clip(CircleShape)                       // clip to the circle shape
                     .border(0.5.dp, Color.Gray, CircleShape)   // add a border (optional)
             )
@@ -330,7 +366,7 @@ fun TopBrandItem(
             ) {
                 Row(
                     modifier = Modifier
-                        .size(width = 70.dp,height =  24.dp)
+                        .size(width = 70.dp, height = 24.dp)
                         .border(0.5.dp, Color.Gray, shape = RoundedCornerShape(5.dp))
                         .clip(RoundedCornerShape(5.dp))
                         .background(Color.White),
@@ -362,6 +398,117 @@ fun TopBrandItem(
                     color = Color.Gray
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CouponSection(
+    couponList: List<FoodCoupon> = listOf(
+        FoodCoupon(
+            imageId = R.drawable.ic_pizza,
+            offPercent = 60,
+            upToOffCashAmount = 120,
+            cashBackPartnerImageId = R.drawable.ic_paypal
+        ),
+        FoodCoupon(
+            imageId = R.drawable.ic_donut,
+            offPercent = 70,
+            upToOffCashAmount = 99,
+            cashBackPartnerImageId = R.drawable.ic_paypal
+        ),
+        FoodCoupon(
+            imageId = R.drawable.ic_ramen,
+            offPercent = 40,
+            upToOffCashAmount = 250,
+            cashBackPartnerImageId = R.drawable.ic_paypal
+        ),
+    )
+) {
+    //Coupon for you section title
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = "Coupon for you",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+        )
+
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
+            items(couponList.size) {
+                CouponItem(couponList[it])
+            }
+        }
+    }
+}
+
+@Composable
+@Preview
+fun CouponItem(
+    foodCoupon: FoodCoupon = FoodCoupon(
+        imageId = R.drawable.ic_donut,
+        offPercent = 60,
+        upToOffCashAmount = 120,
+        cashBackPartnerImageId = R.drawable.ic_paypal
+    )
+) {
+    Box(
+        modifier = Modifier
+            .padding(start = 20.dp)
+            .clip(RoundedCornerShape(5.dp))
+            .border(width = 1.dp, color = Color.Gray, RoundedCornerShape(5.dp))
+    ) {
+        Row(modifier = Modifier.wrapContentWidth()) {
+            Column(modifier = Modifier.align(CenterVertically)) {
+                Text(
+                    text = "GRAB",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 20.dp)
+                        .size(width = 126.dp, height = 32.dp)
+                )
+                Text(
+                    text = "${foodCoupon.offPercent}% OFF",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(start = 20.dp)
+                        .wrapContentHeight()
+                )
+                Text(
+                    text = "UPTO ₹${foodCoupon.upToOffCashAmount} ON YOUR FIRST ORDER ",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(start = 20.dp, top = 10.dp)
+                        .size(width = 126.dp, height = 32.dp)
+                )
+                Row(
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .padding(start = 20.dp, bottom = 20.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "+ cashback from", fontSize = 10.sp)
+                    Image(
+                        painter = painterResource(id = foodCoupon.cashBackPartnerImageId),
+                        contentDescription = "paypal",
+                        modifier = Modifier.size(10.dp)
+                    )
+                }
+            }
+
+            Image(
+                painter = painterResource(id = foodCoupon.imageId),
+                contentDescription = "food coupon",
+                modifier = Modifier
+                    .size(108.dp)
+                    .padding(top = 20.dp, end = 20.dp)
+            )
         }
     }
 }

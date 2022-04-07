@@ -5,6 +5,6 @@ import androidx.annotation.DrawableRes
 data class FoodCoupon(
     @DrawableRes val imageId: Int,
     val offPercent: Int,
-    val UpToOffCashAmount: Int,
+    val upToOffCashAmount: Int,
     @DrawableRes val cashBackPartnerImageId: Int
 )
