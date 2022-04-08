@@ -3,20 +3,24 @@ package com.plcoding.meditationuiyoutube.ui.homeScreen
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.painterResource
@@ -24,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -32,22 +37,25 @@ import androidx.constraintlayout.compose.Dimension
 import com.plcoding.meditationuiyoutube.R
 import com.plcoding.meditationuiyoutube.model.*
 import com.plcoding.meditationuiyoutube.ui.theme.*
+import com.plcoding.meditationuiyoutube.util.CommonUtils
 
 @Composable
 @Preview
 fun HomeScreen() {
+    val listState = rememberLazyListState() //to convert simple Column into scrollable list
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+//            .simpleVerticalScrollbar(state = listState)
     ) {
         val scrollState = rememberScrollState()
-
         // Smooth scroll to specified pixels on first composition
         LaunchedEffect(Unit) { scrollState.animateScrollTo(10000) }
 
         Column(
-            modifier = Modifier.verticalScroll(scrollState)
+            modifier = Modifier
+                .verticalScroll(state = scrollState)    // Vertical Scroll modifier
         ) {
             TopSpace()
             LocationSection()
@@ -56,6 +64,9 @@ fun HomeScreen() {
             TopBrandSection()
             CouponSection()
             CategorySection()
+            CommonUtils.SectionSeparator(topPadding = 10.dp,bottomPadding = 5.dp, thickness = 5.dp)
+            TopPicksSection()
+            CommonUtils.SectionSeparator(topPadding = 10.dp,bottomPadding = 10.dp, thickness = 5.dp)
         }
     }
 }
@@ -297,7 +308,7 @@ fun TopBrandSection(
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp)
+//                .padding(horizontal = 10.dp)
         ) {
             items(topBrandList.size) {
                 TopBrandItem(topBrandData = topBrandList[it])
@@ -307,7 +318,6 @@ fun TopBrandSection(
 }
 
 @Composable
-@Preview
 fun TopBrandItem(
     topBrandData: TopBrandData = TopBrandData(
         brandImg = R.drawable.ic_pizza,
@@ -340,7 +350,7 @@ fun TopBrandItem(
     ConstraintLayout(
         constraintSet = constraintSet,
         modifier = Modifier
-            .padding(start = 10.dp)
+            .padding(start = 20.dp)
     ) {
         Box(
             modifier = Modifier
@@ -401,6 +411,7 @@ fun TopBrandItem(
                 )
             }
         }
+
     }
 }
 
@@ -408,21 +419,21 @@ fun TopBrandItem(
 fun CouponSection(
     couponList: List<FoodCoupon> = listOf(
         FoodCoupon(
-            imageId = R.drawable.ic_pizza,
+            imageId = R.drawable.ic_japanese_food,
             offPercent = 60,
             upToOffCashAmount = 120,
             cashBackPartnerImageId = R.drawable.ic_paypal,
             colorGradient = listOf(Beige1, Beige2, Beige3)
         ),
         FoodCoupon(
-            imageId = R.drawable.ic_donut,
+            imageId = R.drawable.ic_pasta,
             offPercent = 70,
             upToOffCashAmount = 99,
             cashBackPartnerImageId = R.drawable.ic_paypal,
             colorGradient = listOf(BlueViolet1, BlueViolet2, AquaBlue)
         ),
         FoodCoupon(
-            imageId = R.drawable.ic_ramen,
+            imageId = R.drawable.ic_black_tea,
             offPercent = 40,
             upToOffCashAmount = 250,
             cashBackPartnerImageId = R.drawable.ic_paypal,
@@ -435,12 +446,27 @@ fun CouponSection(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        Text(
-            text = "Coupon for you",
-            fontSize = 16.sp,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_offer),
+                contentDescription = "top_pick",
+                tint = ZomatoRed,
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = "Coupon for you",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+            )
+        }
 
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(couponList.size) {
@@ -451,7 +477,6 @@ fun CouponSection(
 }
 
 @Composable
-@Preview
 fun CouponItem(
     foodCoupon: FoodCoupon = FoodCoupon(
         imageId = R.drawable.ic_donut,
@@ -523,7 +548,6 @@ fun CouponItem(
     }
 }
 
-@Preview
 @Composable
 fun CategorySection(
     categoryItemList: List<CategoryData> = listOf(
@@ -540,7 +564,7 @@ fun CategorySection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp)
+//            .padding(10.dp)
     ) {
         Text(
             text = "Choose yummy for your tummy",
@@ -567,7 +591,6 @@ fun CategorySection(
     }
 }
 
-@Preview
 @Composable
 fun CategoryItem(
     categoryData: CategoryData = CategoryData(
@@ -578,7 +601,10 @@ fun CategoryItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .padding(
+                horizontal = 10.dp,
+                vertical = 10.dp
+            )
     ) {
         Image(
             painter = painterResource(id = categoryData.catImg),
@@ -601,3 +627,216 @@ fun CategoryItem(
         )
     }
 }
+
+@Preview
+@Composable
+fun TopPicksSection(
+    topPickList: List<TopPickData> = listOf(
+        TopPickData(
+            restaurantImg = R.drawable.ic_burger,
+            discountPercent = 70,
+            restaurantName = "Dinner bell",
+            approxDeliveryTime = "10-20 mins"
+        ),
+        TopPickData(
+            restaurantImg = R.drawable.ic_ramen,
+            discountPercent = 40,
+            restaurantName = "Dinner Post",
+            approxDeliveryTime = "20-30 mins"
+        ),
+        TopPickData(
+            restaurantImg = R.drawable.ic_donut,
+            discountPercent = 10,
+            restaurantName = "Sky Paradise",
+            approxDeliveryTime = "40-45 mins"
+        ),
+        TopPickData(
+            restaurantImg = R.drawable.ic_pizza,
+            discountPercent = 50,
+            restaurantName = "Oliver's pizza",
+            approxDeliveryTime = "10-15 mins"
+        ),
+        TopPickData(
+            restaurantImg = R.drawable.ic_taco,
+            discountPercent = 30,
+            restaurantName = "Cantina La Vida",
+            approxDeliveryTime = "20-30 mins"
+        ),
+        TopPickData(
+            restaurantImg = R.drawable.ic_pasta,
+            discountPercent = 30,
+            restaurantName = "Kung pao",
+            approxDeliveryTime = "30-50 mins"
+        ),
+        TopPickData(
+            restaurantImg = R.drawable.ic_japanese_food,
+            discountPercent = 30,
+            restaurantName = "No mo Tofu",
+            approxDeliveryTime = "40-50 mins"
+        ),
+    )
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_top_pick),
+                contentDescription = "top_pick",
+                tint = ZomatoRed,
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = "Top picks for you",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+            )
+        }
+        //
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
+            items(topPickList.size) {
+                TopPickItem(topPickList[it])
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun TopPickItem(
+    topPickData: TopPickData = TopPickData(
+        restaurantImg = R.drawable.ic_taco,
+        discountPercent = 30,
+        restaurantName = "Cantina La Vida",
+        approxDeliveryTime = "20-30 mins"
+    )
+) {
+    val constrainSet = ConstraintSet {  //1. Constraint set
+        val restaurantImg = createRefFor("restaurantImg")   //2. created for
+        val restaurantData = createRefFor("restaurantData")
+
+        constrain(restaurantImg) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            width = Dimension.value(86.dp)
+            height = Dimension.value(86.dp)
+        }
+        constrain(restaurantData) {
+            top.linkTo(restaurantImg.top, margin = 72.dp) // top to the bottom
+            start.linkTo(restaurantImg.start)
+            end.linkTo(restaurantImg.end)
+            width = Dimension.value(86.dp)
+            height = Dimension.value(86.dp)
+        }
+    }
+    ConstraintLayout(
+        constraintSet = constrainSet, modifier = Modifier.padding(start = 20.dp)
+    ) {
+        Box(modifier = Modifier.layoutId("restaurantImg")) {
+            Image(
+                painter = painterResource(id = topPickData.restaurantImg),
+                contentDescription = topPickData.restaurantName,
+                modifier = Modifier
+                    .size(80.dp)
+                    .border(width = 0.5.dp, color = Color.Gray, shape = RectangleShape)
+                    .padding(2.dp)
+            )
+        }
+        Box(modifier = Modifier.layoutId("restaurantData")) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Row(
+                    modifier = Modifier
+                        .size(width = 70.dp, 24.dp)
+                        .border(
+                            width = 0.5.dp,
+                            color = Color.Gray,
+                            shape = RoundedCornerShape(5.dp)
+                        )
+                        .clip(shape = RoundedCornerShape(5.dp))
+                        .background(Color.White)
+                        .align(CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "${topPickData.discountPercent}% OFF",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(CenterVertically)
+                    )
+                }
+                Text(
+                    text = topPickData.restaurantName,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.width(80.dp),
+//                    modifier = Modifier.align(CenterHorizontally)
+                )
+                Text(
+                    text = topPickData.approxDeliveryTime,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+//                    modifier = Modifier.align(CenterHorizontally),
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun NearbyRestaurantSection() {
+    
+}
+
+
+
+/*@Composable
+fun Modifier.simpleVerticalScrollbar(
+    state: LazyListState,
+    width: Dp = 8.dp
+): Modifier {
+    val targetAlpha = if (state.isScrollInProgress) 1f else 0f
+    val duration = if (state.isScrollInProgress) 150 else 500
+
+    val alpha by animateFloatAsState(
+        targetValue = targetAlpha,
+        animationSpec = tween(durationMillis = duration)
+    )
+
+    return drawWithContent {
+        drawContent()
+
+        val firstVisibleElementIndex = state.layoutInfo.visibleItemsInfo.firstOrNull()?.index
+        val needDrawScrollbar = state.isScrollInProgress || alpha > 0.0f
+
+        // Draw scrollbar if scrolling or if the animation is still running and lazy column has content
+        if (needDrawScrollbar && firstVisibleElementIndex != null) {
+            val elementHeight = this.size.height / state.layoutInfo.totalItemsCount
+            val scrollbarOffsetY = firstVisibleElementIndex * elementHeight
+            val scrollbarHeight = state.layoutInfo.visibleItemsInfo.size * elementHeight
+
+            drawRect(
+                color = Color.Red,
+                topLeft = Offset(this.size.width - width.toPx(), scrollbarOffsetY),
+                size = Size(width.toPx(), scrollbarHeight),
+                alpha = alpha
+            )
+        }
+    }
+}*/
