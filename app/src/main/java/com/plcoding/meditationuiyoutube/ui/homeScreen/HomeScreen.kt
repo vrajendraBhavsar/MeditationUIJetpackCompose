@@ -6,15 +6,16 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.Start
 import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -40,7 +40,6 @@ import com.plcoding.meditationuiyoutube.ui.theme.*
 import com.plcoding.meditationuiyoutube.util.CommonUtils
 
 @Composable
-@Preview
 fun HomeScreen() {
     val listState = rememberLazyListState() //to convert simple Column into scrollable list
     Box(
@@ -64,9 +63,10 @@ fun HomeScreen() {
             TopBrandSection()
             CouponSection()
             CategorySection()
-            CommonUtils.SectionSeparator(topPadding = 10.dp,bottomPadding = 5.dp, thickness = 5.dp)
+            CommonUtils.SectionSeparator(topPadding = 10.dp, bottomPadding = 5.dp, thickness = 5.dp)
             TopPicksSection()
-            CommonUtils.SectionSeparator(topPadding = 10.dp,bottomPadding = 10.dp, thickness = 5.dp)
+            CommonUtils.SectionSeparator(topPadding = 10.dp, bottomPadding = 5.dp, thickness = 5.dp)
+            NearbyRestaurantSection()
         }
     }
 }
@@ -628,7 +628,6 @@ fun CategoryItem(
     }
 }
 
-@Preview
 @Composable
 fun TopPicksSection(
     topPickList: List<TopPickData> = listOf(
@@ -707,7 +706,6 @@ fun TopPicksSection(
     }
 }
 
-@Preview
 @Composable
 fun TopPickItem(
     topPickData: TopPickData = TopPickData(
@@ -800,10 +798,240 @@ fun TopPickItem(
 
 @Preview
 @Composable
-fun NearbyRestaurantSection() {
-    
+fun NearbyRestaurantSection(
+    nearbyRestList: List<NearByRestaurantData> = listOf(
+        NearByRestaurantData(
+            restaurantImg = R.drawable.ic_biryani,
+            discountPercent = 25,
+            restaurantName = "Lajawab Dry & Fry",
+            availableCuisines = listOf("Punjabi", "Chinese", "North Indian"),
+            location = "Sola",
+            distance = 6,
+            ratings = 3.6f,
+            approxDeliveryTime = "25-30 mins",
+            costForTwo = 600,
+            extraOfferPercentage = 60,
+            extraOfferUpto = 240
+        ),
+        NearByRestaurantData(
+            restaurantImg = R.drawable.ic_japanese_food,
+            discountPercent = 50,
+            restaurantName = "Tomatos",
+            availableCuisines = listOf("Mexican", "Chinese", "North Indian"),
+            location = "S G Highway",
+            distance = 12,
+            ratings = 4.3f,
+            approxDeliveryTime = "50-60 mins",
+            costForTwo = 1200,
+            extraOfferPercentage = 40,
+            extraOfferUpto = 320
+        ),
+        NearByRestaurantData(
+            restaurantImg = R.drawable.ic_bbq,
+            discountPercent = 40,
+            restaurantName = "",
+            availableCuisines = listOf("Punjabi", "Chinese"),
+            location = "Navrangpura",
+            distance = 4,
+            ratings = 4.0f,
+            approxDeliveryTime = "30-40 mins",
+            costForTwo = 800,
+            extraOfferPercentage = 50,
+            extraOfferUpto = 120
+        ),
+        NearByRestaurantData(
+            restaurantImg = R.drawable.ic_cake,
+            discountPercent = 60,
+            restaurantName = "Chocolate Room",
+            availableCuisines = listOf("Dessert", "Pastries", "Sweets"),
+            location = "Science City Road",
+            distance = 8,
+            ratings = 3.2f,
+            approxDeliveryTime = "15-25 mins",
+            costForTwo = 500,
+            extraOfferPercentage = 50,
+            extraOfferUpto = 120
+        ),
+        NearByRestaurantData(
+            restaurantImg = R.drawable.ic_ramen,
+            discountPercent = 40,
+            restaurantName = "Kung Pao Cafe",
+            availableCuisines = listOf("Punjabi", "Chinese", "Continental"),
+            location = "Navrangpura",
+            distance = 12,
+            ratings = 3.0f,
+            approxDeliveryTime = "40-50 mins",
+            costForTwo = 800,
+            extraOfferPercentage = 60,
+            extraOfferUpto = 240
+        ),
+        NearByRestaurantData(
+            restaurantImg = R.drawable.ic_biryani,
+            discountPercent = 50,
+            restaurantName = "Lajawab Dry & Fry",
+            availableCuisines = listOf("Punjabi", "Chinese", "North Indian"),
+            location = "Sola",
+            distance = 6,
+            ratings = 3.6f,
+            approxDeliveryTime = "25-30 mins",
+            costForTwo = 700,
+            extraOfferPercentage = 30,
+            extraOfferUpto = 120
+        ),
+    )
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, top = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_restaurant),
+                contentDescription = "top_pick",
+                tint = ZomatoRed,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+            Text(
+                text = "Near by Restaurants",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .align(Bottom)
+            )
+        }
+        Text(
+            text = "Discover places at your reach",
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Normal,
+            lineHeight = 14.sp,
+            modifier = Modifier
+                .padding(start = 20.dp)
+                .align(alignment = Start)
+        )
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
+            items(nearbyRestList.size) {
+                NearbyRestaurantItem(nearbyRestList[it])
+            }
+        }
+    }
 }
 
+@Preview
+@Composable
+fun NearbyRestaurantItem(
+    nearByRestaurantData: NearByRestaurantData = NearByRestaurantData(
+        restaurantImg = R.drawable.ic_cake,
+        discountPercent = 60,
+        restaurantName = "Chocolate Room",
+        availableCuisines = listOf("Dessert", "Pastries", "Sweets"),
+        location = "Science City Road",
+        distance = 8,
+        ratings = 3.2f,
+        approxDeliveryTime = "15-25 mins",
+        costForTwo = 500,
+        extraOfferPercentage = 50,
+        extraOfferUpto = 120
+    ),
+) {
+  Row() {
+      Box(modifier = Modifier.padding(start = 20.dp, top = 10.dp)) {
+          val constrainSet = ConstraintSet {  //1. Constraint set
+              val restaurantImg = createRefFor("restaurantImg")   //2. created for
+              val restaurantData = createRefFor("restaurantData")
+
+              constrain(restaurantImg) {
+                  top.linkTo(parent.top)
+                  start.linkTo(parent.start)
+                  end.linkTo(parent.end)
+                  width = Dimension.value(86.dp)
+                  height = Dimension.value(86.dp)
+              }
+              constrain(restaurantData) {
+                  top.linkTo(restaurantImg.top, margin = 72.dp) // top to the bottom
+                  start.linkTo(restaurantImg.start)
+                  end.linkTo(restaurantImg.end)
+                  width = Dimension.value(86.dp)
+//                height = Dimension.value(86.dp)
+              }
+          }
+          ConstraintLayout(
+              constraintSet = constrainSet
+          ) {
+              Box(modifier = Modifier.layoutId("restaurantImg")) {
+                  Image(
+                      painter = painterResource(id = nearByRestaurantData.restaurantImg),
+                      contentDescription = nearByRestaurantData.restaurantName,
+                      modifier = Modifier
+                          .size(80.dp)
+                          .border(width = 0.5.dp, color = Color.Gray, shape = RectangleShape)
+                          .padding(2.dp)
+                  )
+              }
+              Box(modifier = Modifier
+                  .layoutId("restaurantData")
+                  .padding(bottom = 20.dp)) {
+                  Column(
+                      horizontalAlignment = Alignment.CenterHorizontally
+                  ) {
+                      Row(
+                          verticalAlignment = Alignment.CenterVertically,
+                          horizontalArrangement = Arrangement.Center,
+                          modifier = Modifier
+                              .size(80.dp, 24.dp)
+                              .padding(horizontal = 4.dp)
+                              .border(
+                                  width = 0.5.dp,
+                                  color = Color.Gray,
+                                  shape = RoundedCornerShape(5.dp)
+                              )
+                              .clip(shape = RoundedCornerShape(5.dp))
+                              .background(Color.White)
+
+                      ) {
+                          Text(
+                              text = "${nearByRestaurantData.discountPercent}% OFF",
+                              fontSize = 12.sp,
+                              fontWeight = FontWeight.Bold,
+                              modifier = Modifier.align(CenterVertically),
+                              textAlign = TextAlign.Center
+                          )
+                      }
+                  }
+              }
+          }
+      }
+      
+      Column() {
+          Text(
+              text = nearByRestaurantData.restaurantName,
+              fontSize = 16.sp,
+              fontWeight = FontWeight.Normal,
+              textAlign = TextAlign.Center,
+              maxLines = 2,
+              overflow = TextOverflow.Ellipsis,
+              modifier = Modifier.width(80.dp),
+//                    modifier = Modifier.align(CenterHorizontally)
+          )
+          Text(
+              text = nearByRestaurantData.approxDeliveryTime,
+              fontSize = 14.sp,
+              fontWeight = FontWeight.Normal,
+              textAlign = TextAlign.Center,
+//                    modifier = Modifier.align(CenterHorizontally),
+              color = Color.Gray
+          )
+      }
+  }
+}
 
 
 /*@Composable
